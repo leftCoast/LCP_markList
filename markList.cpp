@@ -152,7 +152,7 @@ void markList::setup(void) {
 	markListList*	ourList = new markListList;
 	if (ourList) {
 		aMark.setPosValues("48.46597° N","122.67584° W");
-		Serial.println(aMark.lonDeg);
+		//Serial.println(aMark.lonDeg);
 		ourList->addItem("Skyline entrance",aMark.getLatAsDbl(),aMark.getLonAsDbl());
 		addObj(ourList);
 	}
