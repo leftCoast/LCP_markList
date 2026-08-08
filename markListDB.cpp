@@ -80,7 +80,7 @@ addItemDBox::addItemDBox(listener* inListener,screenTypes inType)
 	theMsg->y = 30;												// Kick the default message over a bit.
 	editRect.setRect(10,70,width-20,10);					// Setup location for the edit box.																				//
 	
-	nameField = new editLabel(&editRect,"");	// Create it.
+	nameField = new editLabel(&editRect,"");				// Create it.
 	nameField->setLocation(0,0);
 	nameField->setColors(&black,&white);					// Set colors
 	nameField->setEventSet(fullClick);
@@ -123,7 +123,9 @@ addItemDBox::addItemDBox(listener* inListener,screenTypes inType)
 }
 	
 	
-addItemDBox::~addItemDBox(void) {  }
+addItemDBox::~addItemDBox(void) {
+
+}
 
 
 const char*	addItemDBox::getName(void) {
@@ -139,7 +141,8 @@ gPosPack addItemDBox::getPos(void) {
 	posParser	aParser;
 	Serial.println("returning position");
 	Serial.println(latField->editBuff);
-	Serial.println(lonField->editBuff);	
+	Serial.println(lonField->editBuff);
+	Serial.println("That was position");
 	return aParser.parsePos(latField->editBuff,lonField->editBuff);
 }
 
