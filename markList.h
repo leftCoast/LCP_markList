@@ -7,6 +7,7 @@
 #include <globalPos.h>
 #include <blockFile.h>
 #include <markListDB.h>
+#include <navOS.h>
 
 extern navMark selectedMark;
 extern bool		haveMarkSet;
@@ -138,7 +139,7 @@ class markList :	public panel {
 				void	setMark(void);
 				void	addMark(markListObj* newObj);
 				void	loop(void);
-
+	
 				markListList*	ourList;
 				markListObj*	selectedItem;
 				markListObj*	savedSelect;

@@ -40,7 +40,7 @@ bool		haveMarkSet = false;
 markListObj::markListObj(scrollingList* inList)
 	: navMark(),
 	drawGroup(&markObjRect) {
-ST	
+	
 	nameLbl		= NULL;
 	distLbl		= NULL;
 	bearingLbl	= NULL;
@@ -58,7 +58,7 @@ markListObj::~markListObj(void) {  }
 
 
 void markListObj::setup(void) {
-ST	
+	
 
 	/*
 	distLbl = new erasableText();
@@ -95,7 +95,7 @@ ST
 
 
 void markListObj::setName(const char* inName) {
-ST	
+	
 	char*	shortName;
 	
 	if (inName) {
@@ -114,7 +114,7 @@ ST
 
 
 void markListObj::setPos(gPosPack* inPos) {
-ST	
+	
 	navMark::setPos(inPos);
 	setLatLonLbls();
 }
@@ -122,7 +122,7 @@ ST
 	
 // Set the labels to show what we're holding.
 void markListObj::setLatLonLbls(void) {
-ST
+
 	char			outStr[40];
 	char			qStr[4];
 	double		value;
@@ -147,7 +147,7 @@ ST
 
 // selecting and dragging things.
 void markListObj::doAction(event* inEvent,point* localPt) {
-ST
+
 	point		listPt;
 	
 	if (inEvent->mType==touchEvent) {
@@ -181,7 +181,7 @@ ST
 
 // Focus is changing, make these look right.
 void markListObj::setLblColors(void) {
-ST
+
 	if (haveFocus()) {
 		nameLbl->setColors(mainTextColor,focusBackColor);
 		//distLbl->setColors(subTextColor,focusBackColor);
@@ -202,7 +202,7 @@ ST
 // change. But in this case, ourApp needs to know who's selected, because it holds the
 // function icons. How to set them, who to act on when clicked. It needs to track this.
 void  markListObj::setThisFocus(bool setLoose) {
-ST	
+	
 	markList*	ourApp;
 	
 	ourApp = (markList*)ourPanel;		// We are a panel, therefor ourApp is our panel.
@@ -217,7 +217,7 @@ ST
 
 
 void  markListObj::setMark(void) {
-ST	
+	
 	selectedMark = *this;
 	haveMarkSet = true;
 }
@@ -234,7 +234,7 @@ bool markListObj::wantRefresh(void) {
 
 
 void markListObj::drawSelf(void) {
-ST
+
 	rect			aFrame(this);
 	
 	aFrame.insetRect(1);
@@ -247,10 +247,10 @@ ST
 }
 	
 	
-void markListObj::setMarkID(uint32_t ID) {ST markID = ID; }
+void markListObj::setMarkID(uint32_t ID) { markID = ID; }
 
 
-uint32_t markListObj::getMarkID(void) {ST return markID; }
+uint32_t markListObj::getMarkID(void) { return markID; }
 			
 			
 				
@@ -261,7 +261,7 @@ uint32_t markListObj::getMarkID(void) {ST return markID; }
 
 markListList::markListList(rect* inRect)
 	: scrollingList(inRect) {
-ST	
+	
 	focusBackColor = new colorObj(LC_CHARCOAL);
 	dispBackColor = new colorObj(LC_BLACK);
 	mainTextColor = new colorObj(LC_YELLOW);
@@ -271,7 +271,7 @@ ST
 
 
 markListList::~markListList(void) {
-ST
+
 	if (focusBackColor) {
 		delete(focusBackColor);
 		focusBackColor = NULL;
@@ -292,7 +292,7 @@ ST
 
 
 void markListList::addItem(const char* inName,gPosPack* inGPos) {
-ST	
+	
 	markListObj*	newObj;
 	
 	newObj = new markListObj(this);
@@ -304,16 +304,16 @@ ST
 }
 
 
-void markListList::addItem(markListObj* newObj) {ST if (newObj) addObj(newObj); }
+void markListList::addItem(markListObj* newObj) { if (newObj) addObj(newObj); }
 
 
 void markListList::setup(void) {
-ST
+
 }
 	
 	
 void markListList::drawSelf(void) { 
-ST
+
 	//screen->drawRect(this,&white);
 }	
 	
@@ -326,18 +326,18 @@ ST
 
 
 IDList::IDList(blockFile* aBLockfile) {
-ST
+
 	IDBuff = NULL;
 	ourBlockFile = aBLockfile;
 }
 
 
-IDList::~IDList(void) {ST resizeBuff(0,(void**)&IDBuff); }
+IDList::~IDList(void) { resizeBuff(0,(void**)&IDBuff); }
 
 
 // Finds and returns the size of the Root block, in bytes.
 unsigned long IDList::getNumRootBytes(void) {
-ST
+
 	unsigned long	rootID;
 	
 	rootID = ourBlockFile->readRootBlockID();			// Grab root ID.
@@ -350,7 +350,7 @@ ST
 
 // Calculates and returns the number of items we're storing.	
 int IDList::getNumItems(void) {
-ST	
+	
 	unsigned long	numBytes;
 	
 	numBytes = getNumRootBytes();						// get the number of bytes..
@@ -363,7 +363,7 @@ ST
 
 // Allocates and populates our IDBuff of item IDs.
 bool IDList::getList(bool plusOne) {
-ST	
+	
 	unsigned long	rootID;
 	unsigned long	numBytes;
 	unsigned long	allocate;
@@ -390,7 +390,7 @@ ST
 // Allocates and ID number, adds this new value to the rootID block
 // nd saves the block to file.
 unsigned long IDList::addItem(void) {
-ST	
+	
 	unsigned long 	newID;
 	unsigned long 	rootID;
 	unsigned long	numBytes;
@@ -422,7 +422,7 @@ ST
 // rootID block and save the change. Make sure to delette the actual
 // data block in question first. The does NOT do that.
 bool IDList::removeItem(unsigned long oldID) {
-ST	
+	
 	unsigned long	rootID;
 	int				numItems;
 	unsigned long	numBytes;
@@ -459,14 +459,14 @@ ST
 
 
 itemMgr::itemMgr(blockFile* aBlockFile)
-	: IDList(aBlockFile) {ST ourBlockFile = aBlockFile; }
+	: IDList(aBlockFile) { ourBlockFile = aBlockFile; }
 	
 	
-itemMgr::~itemMgr(void) {ST }
+itemMgr::~itemMgr(void) { }
 
 
 // Not yet.
-void itemMgr::sortList(void) {ST  }
+void itemMgr::sortList(void) {  }
 
 
 
@@ -475,7 +475,7 @@ void itemMgr::sortList(void) {ST  }
 // the list. Then seeing if we can read that IDs data into that object. If so, we add it to
 // the list on the screen. If not we recycle the object and move on.
 void itemMgr::populateList(void) {
-ST	
+	
 	markList*		ourApp;
 	int				numMarks;
 	markListObj*	newMark;
@@ -505,7 +505,7 @@ ST
 // it's name and position. Then create a file ID for it and using this, save it to disk.
 // Finally we add it to the list it will appear on.
 void itemMgr::addNewItem(const char* inName,gPosPack* inPos) {
-ST	
+	
 	markList*		ourApp;
 	unsigned long	newID;
 	markListObj*	newItem;
@@ -531,7 +531,7 @@ ST
 // This pulls the item out of the list it was displayed in. Patches the list. Then pulls
 // it out of the file it was saved it. Finally it deletes the object itself.
 void itemMgr::deleteItem(markListObj* oldView) {
-ST
+
 	markList*	ourApp;
 	
 	if (oldView) {														// Sanity, make sure we have one.
@@ -550,7 +550,7 @@ ST
 // We have a markListObj with an item ID already set. This attempts to read that item's
 // data into it. It returns if it was successful or not.
 bool itemMgr::readItem(markListObj* aMark) {
-ST
+
 	uint8_t*	buff;
 	uint32_t	numBytes;
 	bool		success;
@@ -578,7 +578,7 @@ ST
 // We have a complete markListObj with name, position and ID. This will save this item to
 // the file. It doen't tell us if this worked or not.		
 void itemMgr::saveItem(markListObj* aMark) {
-ST	
+	
 	uint8_t*	buff;
 	uint32_t	numBytes;
 	
@@ -597,7 +597,7 @@ ST
 
 
 // Kinda' a typing aid? I copied all this stuff from shopList app. They were so close.
-void itemMgr::saveSelected(markListObj* selected) {ST saveItem(selected); }
+void itemMgr::saveSelected(markListObj* selected) { saveItem(selected); }
 		
 
 
@@ -609,7 +609,7 @@ void itemMgr::saveSelected(markListObj* selected) {ST saveItem(selected); }
 
 markList::markList(int ourAppID)
 	: panel(ourAppID) {
-ST	
+	
 	bool	success;
 	
 	success = false;											// We're girding on our sword.
@@ -634,7 +634,7 @@ ST
 
 
 markList::~markList(void) {
-ST
+
 	if (ourBlockFile) delete ourBlockFile;
 	if (ourItemMgr) delete ourItemMgr;
 }
@@ -642,8 +642,7 @@ ST
 
 
 void markList::setup(void) {
-ST
-	gPosPack		aGPos;
+
 	posParser	ourParser;
 	rect			iconBar;
 	iconArrange	spreader;
@@ -695,7 +694,7 @@ ST
 
 
 void markList::setItemIcons(bool selectActive,bool addActive,bool editActive,bool delActive,bool readmeActive) {
-ST
+
 		setMarkBtn->setActive(selectActive);
 		addItem->setActive(addActive);
 		editItem->setActive(editActive);
@@ -705,8 +704,9 @@ ST
 
 	
 void markList::setMark(void) {
-ST
+
 	if (selectedItem) {
+		ourOS.setScr(false);	// Quick hide the redraw!
 		selectedItem->setMark();
 		close();
 	}
@@ -714,7 +714,7 @@ ST
 
 			
 void markList::selected(markListObj* itemPtr) {
-ST
+
 	selectedItem = itemPtr;
 	if (selectedItem) {
 		setItemIcons(true,true,true,true,true);
@@ -724,14 +724,14 @@ ST
 };
 
 
-void markList::drawSelf(void) {ST screen->fillScreen(&black); }
+void markList::drawSelf(void) { screen->fillScreen(&black); }
 		
 		
-void markList::addMark(markListObj* newObj) {ST ourList->addItem(newObj); }
+void markList::addMark(markListObj* newObj) { ourList->addItem(newObj); }
 
 
 void markList::handleCom(stdComs comID) {
-ST	
+	
 	gPosPack	aPos;
 	
 	switch(comID) {
@@ -817,13 +817,13 @@ void markList::loop(void) { }
 
 
 selectBtn::selectBtn(int xLoc,int yLoc,const char* iconPath,markList* inApp)
-	: iconButton(xLoc,yLoc,iconPath) {ST ourLink = inApp; }
+	: iconButton(xLoc,yLoc,iconPath) { ourLink = inApp; }
 	
-selectBtn::~selectBtn(void) {ST  }
+selectBtn::~selectBtn(void) {  }
 	
 	
 void selectBtn::doAction(event* inEvent,point* localPt) { 
-ST
+
 	if (ourLink) {
 		ourLink->setMark();
 	}		
