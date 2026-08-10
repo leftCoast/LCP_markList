@@ -79,8 +79,8 @@ class addItemDBox :	public alertObj,
 				
 				const char*	getName(void);
 				gPosPack 	getPos(void);
-	virtual	void  		handleCom(stdComs comID);
-	virtual	void			idle(void);
+	//virtual	void  		handleCom(stdComs comID);
+	//virtual	void			idle(void);
 			
 				editLabel*	nameField;
 				editLabel*	latField;

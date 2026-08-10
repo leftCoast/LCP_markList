@@ -76,12 +76,12 @@ addItemDBox::addItemDBox(listener* inListener,screenTypes inType)
 	rect		editRect;
 	frame*	editFrame;
 	
-	setRect(60,100,200,140);									// Move our alertBox down a bit.
+	setRect(60,100,200,146);									// Move our alertBox down a bit.
 	theMsg->y = 30;												// Kick the default message over a bit.
-	editRect.setRect(10,70,width-20,10);					// Setup location for the edit box.																				//
+	editRect.setRect(10,70,width-20,12);					// Setup location for the edit box.																				//
 	
 	nameField = new editLabel(&editRect,"");				// Create it.
-	nameField->setLocation(0,0);
+	nameField->setLocation(3,3);
 	nameField->setColors(&black,&white);					// Set colors
 	nameField->setEventSet(fullClick);
 	nameD = new datafield(&editRect);
@@ -89,11 +89,12 @@ addItemDBox::addItemDBox(listener* inListener,screenTypes inType)
 	addObj(nameD);													// Hook it up.
 	editFrame = new frame(&editRect);						// Using the edit field rect create a frame.
 	editFrame->insetRect(-3);									// Expand it by 3 pixels per side.
-	addObj(editFrame);											// Hook it up.
+	nameD->setRect(editFrame);
+	addObj(editFrame);											// Hook it up.	
 	
-	editRect.y = editRect.y+20;								// Bump down, next line.
+	editRect.y = editRect.y+22;								// Bump down, next line.
 	latField = new editLabel(&editRect,"");				// Create it.
-	latField->setLocation(0,0);
+	latField->setLocation(3,3);
 	latField->setColors(&black,&white);						// Set colors
 	latField->setEventSet(fullClick);
 	latD = new datafield(&editRect);
@@ -101,11 +102,12 @@ addItemDBox::addItemDBox(listener* inListener,screenTypes inType)
 	addObj(latD);													// Add it to the list.
 	editFrame = new frame(&editRect);							// Using the edit field rect create a frame.
 	editFrame->insetRect(-3);									// Expand it by 3 pixels per side.
+	latD->setRect(editFrame);
 	addObj(editFrame);											// In the pot it goes.
 	
-	editRect.y = editRect.y+20;								// Bump down, next line.
+	editRect.y = editRect.y+22;								// Bump down, next line.
 	lonField = new editLabel(&editRect,"");				// Create it.
-	lonField->setLocation(0,0);
+	lonField->setLocation(3,3);
 	lonField->setColors(&black,&white);						// Set colors
 	lonField->setEventSet(fullClick);
 	lonD = new datafield(&editRect);
@@ -113,13 +115,19 @@ addItemDBox::addItemDBox(listener* inListener,screenTypes inType)
 	addObj(lonD);							
 	editFrame = new frame(&editRect);						// Using the edit field rect create a frame.
 	editFrame->insetRect(-3);									// Expand it by 3 pixels per side.
+	lonD->setRect(editFrame);
 	addObj(editFrame);											// And add it in.
 	
 	if (ourGPS->valid) {
 		latField->setValue(ourGPS->latLon.showLatStr());
 		lonField->setValue(ourGPS->latLon.showLonStr());
 	}
-	hookup();														// Hook into the idler queue.
+	hookup();
+	nameField->setValue("Home");
+	latField->setValue("48.49033 n");
+	lonField->setValue("122.66190 W");
+	
+															// Hook into the idler queue.
 }
 	
 	
@@ -128,31 +136,29 @@ addItemDBox::~addItemDBox(void) {
 }
 
 
-const char*	addItemDBox::getName(void) {
-
-	Serial.println("returning name");
-	Serial.println(nameField->editBuff);
-	return nameField->editBuff;
-}
+const char*	addItemDBox::getName(void) { return nameField->getTextBuff(); }
 
 
 gPosPack addItemDBox::getPos(void) {
 
 	posParser	aParser;
-	Serial.println("returning position");
-	Serial.println(latField->editBuff);
-	Serial.println(lonField->editBuff);
-	Serial.println("That was position");
-	return aParser.parsePos(latField->editBuff,lonField->editBuff);
+
+	return aParser.parsePos(latField->getTextBuff(),lonField->getTextBuff());
 }
 
-
+/*
 void addItemDBox::handleCom(stdComs comID) {
 
-	alertObj::handleCom(comID);
-	if (comID==newItemCmd) {
-		nameField->clearStr();
+	if (comID==okCmd) {
+		Serial.println("got OkCmd");
+		Serial.println(nameField->getTextBuff());
+		Serial.println(latField->getTextBuff());
+		Serial.println(lonField->getTextBuff());
 	}
+	alertObj::handleCom(comID);
+	//if (comID==newItemCmd) {
+	//	nameField->clearStr();
+	//}
 }
 
 
@@ -161,7 +167,7 @@ void addItemDBox::idle(void) {
 	alertObj::idle();
 	
 }
-
+*/
 
 // **************************************************************
 // **********************   editItemDBox    **********************

@@ -5,6 +5,7 @@
 #include <strTools.h>
 #include <rectArrange.h>
 
+#include <debug.h>
 
 #define LIST_X		10								// Little border?
 #define LIST_Y		40								// Give it some room
@@ -39,7 +40,8 @@ bool		haveMarkSet = false;
 markListObj::markListObj(scrollingList* inList)
 	: navMark(),
 	drawGroup(&markObjRect) {
-	
+ST	
+	if (!inList) Serial.println("inList = NULL!!!");
 	nameLbl		= NULL;
 	distLbl		= NULL;
 	bearingLbl	= NULL;
@@ -57,7 +59,7 @@ markListObj::~markListObj(void) {  }
 
 
 void markListObj::setup(void) {
-	
+ST	
 
 	/*
 	distLbl = new erasableText();
@@ -76,25 +78,25 @@ void markListObj::setup(void) {
 	if (nameLbl) {
 		nameLbl->setFont(AFF_MONO_9);
 		addObj(nameLbl);
-	}
+	} else Serial.print("GOT NULL!");
 	
 	latLbl = new erasableText(0,18,LIST_W,17);
 	if (latLbl) {
 		latLbl->setFont(AFF_MONO_9);
 		addObj(latLbl);
-	}
+	} else Serial.print("GOT NULL!");
 	
 	lonLbl = new erasableText(0,36,LIST_W,17);
 	if (lonLbl) {
 		lonLbl->setFont(AFF_MONO_9);
 		addObj(lonLbl);
-	}
+	} else Serial.print("GOT NULL!");
 	setLblColors();
 }
 
 
 void markListObj::setName(const char* inName) {
-	
+ST	
 	char*	shortName;
 	
 	if (inName) {
@@ -114,7 +116,7 @@ void markListObj::setName(const char* inName) {
 
 
 void markListObj::setPos(gPosPack* inPos) {
-	
+ST	
 	navMark::setPos(inPos);
 	setLatLonLbls();
 }
@@ -122,7 +124,7 @@ void markListObj::setPos(gPosPack* inPos) {
 	
 // Set the labels to show what we're holding.
 void markListObj::setLatLonLbls(void) {
-
+ST
 	char			outStr[40];
 	char			qStr[4];
 	double		value;
@@ -147,7 +149,7 @@ void markListObj::setLatLonLbls(void) {
 
 // selecting and dragging things.
 void markListObj::doAction(event* inEvent,point* localPt) {
-
+ST
 	point		listPt;
 	
 	if (inEvent->mType==touchEvent) {
@@ -181,7 +183,7 @@ void markListObj::doAction(event* inEvent,point* localPt) {
 
 // Focus is changing, make these look right.
 void markListObj::setLblColors(void) {
-
+ST
 	if (haveFocus()) {
 		nameLbl->setColors(mainTextColor,focusBackColor);
 		//distLbl->setColors(subTextColor,focusBackColor);
@@ -202,7 +204,7 @@ void markListObj::setLblColors(void) {
 // change. But in this case, ourApp needs to know who's selected, because it holds the
 // function icons. How to set them, who to act on when clicked. It needs to track this.
 void  markListObj::setThisFocus(bool setLoose) {
-	
+ST	
 	markList*	ourApp;
 	
 	ourApp = (markList*)ourPanel;		// We are a panel, therefor ourApp is our panel.
@@ -217,7 +219,7 @@ void  markListObj::setThisFocus(bool setLoose) {
 
 
 void  markListObj::setMark(void) {
-	
+ST	
 	selectedMark = *this;
 	haveMarkSet = true;
 }
@@ -225,7 +227,7 @@ void  markListObj::setMark(void) {
 
 // We don't want to draw stuff where it ain't wanted.
 void markListObj::draw(void) {
-
+ST
 	if (ourlist->isVisible(this)) {
 		drawGroup::draw();
 		
@@ -235,7 +237,7 @@ void markListObj::draw(void) {
 
 
 void markListObj::drawSelf(void) {
-
+ST
 	rect			aFrame(this);
 	
 	aFrame.insetRect(1);
@@ -248,10 +250,15 @@ void markListObj::drawSelf(void) {
 }
 	
 	
-void markListObj::setMarkID(uint32_t ID) { markID = ID; }
+void markListObj::setMarkID(uint32_t ID) {
+ST
+	out("ID we are getting : ");
+	Serial.println(ID);
+	markID = ID;
+}
 
 
-uint32_t markListObj::getMarkID(void) { return markID; }
+uint32_t markListObj::getMarkID(void) {ST return markID; }
 			
 			
 				
@@ -262,7 +269,7 @@ uint32_t markListObj::getMarkID(void) { return markID; }
 
 markListList::markListList(rect* inRect)
 	: scrollingList(inRect) {
-	
+ST	
 	focusBackColor = new colorObj(LC_CHARCOAL);
 	dispBackColor = new colorObj(LC_BLACK);
 	mainTextColor = new colorObj(LC_YELLOW);
@@ -272,7 +279,7 @@ markListList::markListList(rect* inRect)
 
 
 markListList::~markListList(void) {
-
+ST
 	if (focusBackColor) {
 		delete(focusBackColor);
 		focusBackColor = NULL;
@@ -293,7 +300,7 @@ markListList::~markListList(void) {
 
 
 void markListList::addItem(const char* inName,gPosPack* inGPos) {
-	
+ST	
 	markListObj*	newObj;
 	
 	newObj = new markListObj(this);
@@ -305,16 +312,16 @@ void markListList::addItem(const char* inName,gPosPack* inGPos) {
 }
 
 
-void markListList::addItem(markListObj* newObj) { if (newObj) addObj(newObj); }
+void markListList::addItem(markListObj* newObj) {ST if (newObj) addObj(newObj); }
 
 
 void markListList::setup(void) {
-
+ST
 }
 	
 	
 void markListList::drawSelf(void) { 
-
+ST
 	//screen->drawRect(this,&white);
 }	
 	
@@ -327,18 +334,18 @@ void markListList::drawSelf(void) {
 
 
 IDList::IDList(blockFile* aBLockfile) {
-
+ST
 	IDBuff = NULL;
 	ourBlockFile = aBLockfile;
 }
 
 
-IDList::~IDList(void) { resizeBuff(0,(void**)&IDBuff); }
+IDList::~IDList(void) {ST resizeBuff(0,(void**)&IDBuff); }
 
 
 // Finds and returns the size of the Root block, in bytes.
 unsigned long IDList::getNumRootBytes(void) {
-
+ST
 	unsigned long	rootID;
 	
 	rootID = ourBlockFile->readRootBlockID();			// Grab root ID.
@@ -351,7 +358,7 @@ unsigned long IDList::getNumRootBytes(void) {
 
 // Calculates and returns the number of items we're storing.	
 int IDList::getNumItems(void) {
-	
+ST	
 	unsigned long	numBytes;
 	
 	numBytes = getNumRootBytes();						// get the number of bytes..
@@ -364,7 +371,7 @@ int IDList::getNumItems(void) {
 
 // Allocates and populates our IDBuff of item IDs.
 bool IDList::getList(bool plusOne) {
-	
+ST	
 	unsigned long	rootID;
 	unsigned long	numBytes;
 	unsigned long	allocate;
@@ -391,7 +398,7 @@ bool IDList::getList(bool plusOne) {
 // Allocates and ID number, adds this new value to the rootID block
 // nd saves the block to file.
 unsigned long IDList::addItem(void) {
-	
+ST	
 	unsigned long 	newID;
 	unsigned long 	rootID;
 	unsigned long	numBytes;
@@ -423,7 +430,7 @@ unsigned long IDList::addItem(void) {
 // rootID block and save the change. Make sure to delette the actual
 // data block in question first. The does NOT do that.
 bool IDList::removeItem(unsigned long oldID) {
-	
+ST	
 	unsigned long	rootID;
 	int				numItems;
 	unsigned long	numBytes;
@@ -460,14 +467,14 @@ bool IDList::removeItem(unsigned long oldID) {
 
 
 itemMgr::itemMgr(blockFile* aBlockFile)
-	: IDList(aBlockFile) { ourBlockFile = aBlockFile; }
+	: IDList(aBlockFile) {ST ourBlockFile = aBlockFile; }
 	
 	
-itemMgr::~itemMgr(void) { }
+itemMgr::~itemMgr(void) {ST }
 
 
 // Not yet.
-void itemMgr::sortList(void) {  }
+void itemMgr::sortList(void) {ST  }
 
 
 
@@ -476,17 +483,24 @@ void itemMgr::sortList(void) {  }
 // the list. Then seeing if we can read that IDs data into that object. If so, we add it to
 // the list on the screen. If not we recycle the object and move on.
 void itemMgr::populateList(void) {
-	
+ST	
 	markList*		ourApp;
 	int				numMarks;
 	markListObj*	newMark;
-	
+
 	ourApp = (markList*)ourPanel;								// Need pointer to our application.
 	numMarks = getNumItems();									// How many items we got here?
+	Serial.print("numMarks ");
+	Serial.println(numMarks);
 	if (numMarks) {												// We got items?
+		getList();
 		for(int i=0;i<numMarks;i++) {							// For each one
+			Serial.println(i);
 			newMark = new markListObj(ourApp->ourList);	// Create a mark.
 			if (newMark) {											// Got one?
+				outln("Got newMark");
+				out("Setting markID to : ");
+				Serial.println(IDBuff[i]);
 				newMark->setMarkID(IDBuff[i]);				// Set in this new ID.
 				if (readItem(newMark)) {						// Go see if we can read it out.
 					ourApp->addMark(newMark);					// Got it? Add it to the list.
@@ -505,11 +519,11 @@ void itemMgr::populateList(void) {
 // it's name and position. Then create a file ID for it and using this, save it to disk.
 // Finally we add it to the list it will appear on.
 void itemMgr::addNewItem(const char* inName,gPosPack* inPos) {
-	
+ST	
 	markList*		ourApp;
 	unsigned long	newID;
 	markListObj*	newItem;
-	
+
 	if (inName && inPos) {									// We got a name and position?
 		ourApp = (markList*)ourPanel;						// Need pointer to our application.
 		newItem = new markListObj(ourApp->ourList);	// Create the item..
@@ -531,7 +545,7 @@ void itemMgr::addNewItem(const char* inName,gPosPack* inPos) {
 // This pulls the item out of the list it was displayed in. Patches the list. Then pulls
 // it out of the file it was saved it. Finally it deletes the object itself.
 void itemMgr::deleteItem(markListObj* oldView) {
-
+ST
 	markList*	ourApp;
 	
 	if (oldView) {														// Sanity, make sure we have one.
@@ -550,32 +564,35 @@ void itemMgr::deleteItem(markListObj* oldView) {
 // We have a markListObj with an item ID already set. This attempts to read that item's
 // data into it. It returns if it was successful or not.
 bool itemMgr::readItem(markListObj* aMark) {
-
+ST
 	uint8_t*	buff;
 	uint32_t	numBytes;
 	bool		success;
+	uint32_t	markID;
 	
-	success = false;																					// Well, not yet..
-	if (aMark) {																						// Behave, no writing to NULL.
-		if (aMark->getMarkID()) {																		// Got an ID?
-			numBytes = ourBlockFile->getBlockSize(aMark->getMarkID());						// get the size buffer we'll need.
-			if (resizeBuff(numBytes,&buff)) {													// If we can get the bytes																	// We have an id?
-				success = ourBlockFile->getBlock(aMark->getMarkID(),buff,numBytes);		// grab the buffer.
-				if (success) {																			// We got it?
-					aMark->readBuff(buff);															// Stuff the data into the mark.
-				}																							//
-				resizeBuff(0,&buff);																	// Recycle the buffer.
-			}																								//
-		}																									//
-	}																										//
-	return success;																					// return our result.
+	buff = NULL;																			// DON'T FORGET THIS!!!
+	success = false;																		// Well, not yet..
+	if (aMark) {																			// Behave, no writing to NULL.
+		markID = aMark->getMarkID();													// Grab the ID.
+		if (markID) {																		// Got an ID?
+			numBytes = ourBlockFile->getBlockSize(markID);						// get the size buffer we'll need.
+			if (resizeBuff(numBytes,&buff)) {										// If we can get the bytes																	// We have an id?
+				success = ourBlockFile->getBlock(markID,buff,numBytes);		// grab the buffer.
+				if (success) {																// We got it?
+					aMark->readBuff(buff);												// Stuff the data into the mark.
+				}																				//
+				resizeBuff(0,&buff);														// Recycle the buffer.
+			}																					//
+		}																						//
+	}																							//
+	return success;																		// return our result.
 }
 				
 
 // We have a complete markListObj with name, position and ID. This will save this item to
 // the file. It doen't tell us if this worked or not.		
 void itemMgr::saveItem(markListObj* aMark) {
-	
+ST	
 	uint8_t*	buff;
 	uint32_t	numBytes;
 	
@@ -594,7 +611,7 @@ void itemMgr::saveItem(markListObj* aMark) {
 
 
 // Kinda' a typing aid? I copied all this stuff from shopList app. They were so close.
-void itemMgr::saveSelected(markListObj* selected) { saveItem(selected); }
+void itemMgr::saveSelected(markListObj* selected) {ST saveItem(selected); }
 		
 
 
@@ -606,19 +623,18 @@ void itemMgr::saveSelected(markListObj* selected) { saveItem(selected); }
 
 markList::markList(int ourAppID)
 	: panel(ourAppID) {
-	
+ST	
 	bool	success;
 	
 	success = false;											// We're girding on our sword.
 	ourAddItemDBox		= NULL;								// Auto delete.
 	ourEditItemDBox	= NULL;								// Auto delete.
 	readmeBtn			= NULL;								// Auto delete.
-	checkClear			= NULL;								// Auto delete.
 	checkDelete			= NULL;								// Auto delete.
 	ourBlockFile		= NULL;								// We delete.
 	ourItemMgr			= NULL;								// We delete.
 	selectedItem		= NULL;								// No allocation.
-	if (setFilePath("markFile")) {						// We want this name in our folder.
+	if (setFilePath("markFile")) {						// We want this path from our folder.
 		ourBlockFile = new blockFile(mFilePath);		// Have a go at creating the block file.
 		if (ourBlockFile) {									// Got the block file?
 			ourItemMgr = new itemMgr(ourBlockFile);	// Create the item manager.
@@ -632,7 +648,7 @@ markList::markList(int ourAppID)
 
 
 markList::~markList(void) {
-
+ST
 	if (ourBlockFile) delete ourBlockFile;
 	if (ourItemMgr) delete ourItemMgr;
 }
@@ -640,7 +656,7 @@ markList::~markList(void) {
 
 
 void markList::setup(void) {
-
+ST
 	gPosPack		aGPos;
 	posParser	ourParser;
 	rect			iconBar;
@@ -662,31 +678,31 @@ void markList::setup(void) {
 	ourList = new markListList(&listRect);
 	if (ourList) {
 		addObj(ourList);
-		
+		/*
 		aGPos = ourParser.parsePos("48.48867° N,","122.67742° W");
-		ourList->addItem("Skyline entrance",&aGPos);
+		ourItemMgr->addNewItem("Skyline entrance",&aGPos);
 		
 		aGPos = ourParser.parsePos("48.48909° N","122.71192° W");
-		ourList->addItem("Outside Burrows pass",&aGPos);
+		ourItemMgr->addNewItem("Outside Burrows pass",&aGPos);
 		
 		aGPos = ourParser.parsePos("48.52678° N,","122.78071° W");
-		ourList->addItem("Outside thatcher pass",&aGPos);
+		ourItemMgr->addNewItem("Outside thatcher pass",&aGPos);
 		
 		aGPos = ourParser.parsePos("48.52938° N","122.81805° W");
-		ourList->addItem("Inside thatcher pass",&aGPos);
+		ourItemMgr->addNewItem("Inside thatcher pass",&aGPos);
 		
 		aGPos = ourParser.parsePos("48.57866° N","122.88653° W");
-		ourList->addItem("Top of Upright channel",&aGPos);
+		ourItemMgr->addNewItem("Top of Upright channel",&aGPos);
 		
 		aGPos = ourParser.parsePos("48.54209° N","122.93782° W");
-		ourList->addItem("Bottom of Upright channel",&aGPos);
+		ourItemMgr->addNewItem("Bottom of Upright channel",&aGPos);
 		
 		aGPos = ourParser.parsePos("48.54408° N","123.00436° W");
-		ourList->addItem("Outside Friday harbor",&aGPos);
+		ourItemMgr->addNewItem("Outside Friday harbor",&aGPos);
 		
 		aGPos = ourParser.parsePos("48.54395° N", "122.84553° W");
-		ourList->addItem("Northern tip of frost island",&aGPos);
-		
+		ourItemMgr->addNewItem("Northern tip of frost island",&aGPos);
+		*/
 	}
 	
 	aFrame.setRect(defX++,defY++,32,32);
@@ -713,12 +729,12 @@ void markList::setup(void) {
    addObj(readmeBtn);
    spreader.addRect(readmeBtn);
    
-   setItemIcons(true,true,true,true,true);
+   ourItemMgr->populateList();
 }
 
 
 void markList::setItemIcons(bool selectActive,bool addActive,bool editActive,bool delActive,bool readmeActive) {
-
+ST
 		setMarkBtn->setActive(selectActive);
 		addItem->setActive(addActive);
 		editItem->setActive(editActive);
@@ -728,7 +744,7 @@ void markList::setItemIcons(bool selectActive,bool addActive,bool editActive,boo
 
 	
 void markList::setMark(void) {
-
+ST
 	if (selectedItem) {
 		selectedItem->setMark();
 		close();
@@ -737,7 +753,7 @@ void markList::setMark(void) {
 
 			
 void markList::selected(markListObj* itemPtr) {
-
+ST
 	selectedItem = itemPtr;
 	if (selectedItem) {
 		setItemIcons(true,true,true,true,true);
@@ -747,14 +763,14 @@ void markList::selected(markListObj* itemPtr) {
 };
 
 
-void markList::drawSelf(void) { screen->fillScreen(&black); }
+void markList::drawSelf(void) {ST screen->fillScreen(&black); }
 		
 		
-void markList::addMark(markListObj* newObj) { ourList->addItem(newObj); }
+void markList::addMark(markListObj* newObj) {ST ourList->addItem(newObj); }
 
 
 void markList::handleCom(stdComs comID) {
-	
+ST	
 	gPosPack	aPos;
 	
 	switch(comID) {
@@ -836,13 +852,13 @@ void markList::loop(void) { }
 
 
 selectBtn::selectBtn(int xLoc,int yLoc,const char* iconPath,markList* inApp)
-	: iconButton(xLoc,yLoc,iconPath) { ourLink = inApp; }
+	: iconButton(xLoc,yLoc,iconPath) {ST ourLink = inApp; }
 	
-selectBtn::~selectBtn(void) {  }
+selectBtn::~selectBtn(void) {ST  }
 	
 	
 void selectBtn::doAction(event* inEvent,point* localPt) { 
-
+ST
 	if (ourLink) {
 		ourLink->setMark();
 	}		

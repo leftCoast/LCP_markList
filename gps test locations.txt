@@ -1,0 +1,25 @@
+		
+		aGPos = ourParser.parsePos("48.48867° N,","122.67742° W");
+		ourItemMgr->addNewItem("Skyline entrance",&aGPos);
+		
+		aGPos = ourParser.parsePos("48.48909° N","122.71192° W");
+		ourItemMgr->addNewItem("Outside Burrows pass",&aGPos);
+		
+		aGPos = ourParser.parsePos("48.52678° N,","122.78071° W");
+		ourItemMgr->addNewItem("Outside thatcher pass",&aGPos);
+		
+		aGPos = ourParser.parsePos("48.52938° N","122.81805° W");
+		ourItemMgr->addNewItem("Inside thatcher pass",&aGPos);
+		
+		aGPos = ourParser.parsePos("48.57866° N","122.88653° W");
+		ourItemMgr->addNewItem("Top of Upright channel",&aGPos);
+		
+		aGPos = ourParser.parsePos("48.54209° N","122.93782° W");
+		ourItemMgr->addNewItem("Bottom of Upright channel",&aGPos);
+		
+		aGPos = ourParser.parsePos("48.54408° N","123.00436° W");
+		ourItemMgr->addNewItem("Outside Friday harbor",&aGPos);
+		
+		aGPos = ourParser.parsePos("48.54395° N", "122.84553° W");
+		ourItemMgr->addNewItem("Northern tip of frost island",&aGPos);
+		

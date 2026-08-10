@@ -149,7 +149,6 @@ class markList :	public panel {
 				readmeDBox*		ourReadmeDBox;
 				addItemDBox*	ourAddItemDBox;
 				editItemDBox*	ourEditItemDBox;
-				clearOkAlert* 	checkClear;
 				deleteOkAlert*	checkDelete;
 				blockFile*		ourBlockFile;
 				itemMgr*			ourItemMgr;	
