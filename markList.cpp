@@ -41,7 +41,6 @@ markListObj::markListObj(scrollingList* inList)
 	: navMark(),
 	drawGroup(&markObjRect) {
 ST	
-	if (!inList) Serial.println("inList = NULL!!!");
 	nameLbl		= NULL;
 	distLbl		= NULL;
 	bearingLbl	= NULL;
@@ -78,19 +77,19 @@ ST
 	if (nameLbl) {
 		nameLbl->setFont(AFF_MONO_9);
 		addObj(nameLbl);
-	} else Serial.print("GOT NULL!");
+	}
 	
 	latLbl = new erasableText(0,18,LIST_W,17);
 	if (latLbl) {
 		latLbl->setFont(AFF_MONO_9);
 		addObj(latLbl);
-	} else Serial.print("GOT NULL!");
+	}
 	
 	lonLbl = new erasableText(0,36,LIST_W,17);
 	if (lonLbl) {
 		lonLbl->setFont(AFF_MONO_9);
 		addObj(lonLbl);
-	} else Serial.print("GOT NULL!");
+	}
 	setLblColors();
 }
 
@@ -106,7 +105,6 @@ ST
 			heapStr(&shortName,inName);
 			shortName[MAX_CHARS]='\0';
 			nameLbl->setValue(shortName);
-			Serial.println(nameLbl->width);
 			freeStr(&shortName);
 		} else {
 			nameLbl->setValue(inName);
@@ -225,14 +223,13 @@ ST
 }
 
 
-// We don't want to draw stuff where it ain't wanted.
-void markListObj::draw(void) {
-ST
-	if (ourlist->isVisible(this)) {
-		drawGroup::draw();
-		
+// Better way to say "Don't draw hidden list items!"
+bool markListObj::wantRefresh(void) { 
+
+	if (!ourlist->isVisible(this)) {
+		return false;
 	}
-	needRefresh = false;					  // But in all cases. We no longer need to be drawn.		
+	return drawObj::wantRefresh();
 }
 
 
@@ -250,12 +247,7 @@ ST
 }
 	
 	
-void markListObj::setMarkID(uint32_t ID) {
-ST
-	out("ID we are getting : ");
-	Serial.println(ID);
-	markID = ID;
-}
+void markListObj::setMarkID(uint32_t ID) {ST markID = ID; }
 
 
 uint32_t markListObj::getMarkID(void) {ST return markID; }
@@ -490,17 +482,11 @@ ST
 
 	ourApp = (markList*)ourPanel;								// Need pointer to our application.
 	numMarks = getNumItems();									// How many items we got here?
-	Serial.print("numMarks ");
-	Serial.println(numMarks);
 	if (numMarks) {												// We got items?
 		getList();
 		for(int i=0;i<numMarks;i++) {							// For each one
-			Serial.println(i);
 			newMark = new markListObj(ourApp->ourList);	// Create a mark.
 			if (newMark) {											// Got one?
-				outln("Got newMark");
-				out("Setting markID to : ");
-				Serial.println(IDBuff[i]);
 				newMark->setMarkID(IDBuff[i]);				// Set in this new ID.
 				if (readItem(newMark)) {						// Go see if we can read it out.
 					ourApp->addMark(newMark);					// Got it? Add it to the list.
@@ -678,31 +664,6 @@ ST
 	ourList = new markListList(&listRect);
 	if (ourList) {
 		addObj(ourList);
-		/*
-		aGPos = ourParser.parsePos("48.48867° N,","122.67742° W");
-		ourItemMgr->addNewItem("Skyline entrance",&aGPos);
-		
-		aGPos = ourParser.parsePos("48.48909° N","122.71192° W");
-		ourItemMgr->addNewItem("Outside Burrows pass",&aGPos);
-		
-		aGPos = ourParser.parsePos("48.52678° N,","122.78071° W");
-		ourItemMgr->addNewItem("Outside thatcher pass",&aGPos);
-		
-		aGPos = ourParser.parsePos("48.52938° N","122.81805° W");
-		ourItemMgr->addNewItem("Inside thatcher pass",&aGPos);
-		
-		aGPos = ourParser.parsePos("48.57866° N","122.88653° W");
-		ourItemMgr->addNewItem("Top of Upright channel",&aGPos);
-		
-		aGPos = ourParser.parsePos("48.54209° N","122.93782° W");
-		ourItemMgr->addNewItem("Bottom of Upright channel",&aGPos);
-		
-		aGPos = ourParser.parsePos("48.54408° N","123.00436° W");
-		ourItemMgr->addNewItem("Outside Friday harbor",&aGPos);
-		
-		aGPos = ourParser.parsePos("48.54395° N", "122.84553° W");
-		ourItemMgr->addNewItem("Northern tip of frost island",&aGPos);
-		*/
 	}
 	
 	aFrame.setRect(defX++,defY++,32,32);
@@ -788,7 +749,10 @@ ST
 		break;
 		case editCmd			:
 			if (selectedItem) {
-				ourEditItemDBox = new editItemDBox(this,selectedItem->getName(),sType320x480);
+				savedSelect = selectedItem;
+				setFocusPtr(NULL);
+				aPos = savedSelect->getPos();
+				ourEditItemDBox = new editItemDBox(this,&aPos,savedSelect->getName(),sType320x480);
 				if (ourEditItemDBox) {
 					setItemIcons(false,false,false,false,false);
 				}
@@ -798,13 +762,14 @@ ST
 			if (ourAddItemDBox) {
 				aPos = ourAddItemDBox->getPos();
 				ourItemMgr->addNewItem(ourAddItemDBox->getName(),&aPos);
-				setItemIcons(false,true,false,false,false);
+				setItemIcons(false,true,false,false,true);
 				ourAddItemDBox = NULL;
 			} else if (ourEditItemDBox){
-				selectedItem->setName(ourEditItemDBox->getName());
 				aPos = ourEditItemDBox->getPos();
-				selectedItem->setPos(&aPos);
-				ourItemMgr->saveSelected(selectedItem);
+				savedSelect->setName(ourEditItemDBox->getName());
+				savedSelect->setPos(&aPos);
+				ourItemMgr->saveSelected(savedSelect);
+				setFocusPtr(savedSelect);
 				setItemIcons(true,true,true,true,true);
 				ourEditItemDBox = NULL;
 			} else if (checkDelete) {

@@ -29,7 +29,7 @@ class markListObj :	public navMark,
 				void		setLblColors(void);
 	virtual	void  	setThisFocus(bool setLoose);
 				void		setMark(void);
-	virtual	void		draw(void);
+	virtual	bool		wantRefresh(void);
 	virtual	void		drawSelf(void);
 				void		setMarkID(uint32_t ID);
 				uint32_t	getMarkID(void);
@@ -141,6 +141,7 @@ class markList :	public panel {
 
 				markListList*	ourList;
 				markListObj*	selectedItem;
+				markListObj*	savedSelect;
 				selectBtn* 		setMarkBtn;
 				stdComBtn*		addItem;
 				stdComBtn*		delItem;

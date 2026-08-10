@@ -64,31 +64,42 @@ class clearOkAlert :	public alertObj {
 				~clearOkAlert(void);			
 };
 
+// **************************************************************
+// ********************   addEditDboxBase    ********************
+// **************************************************************
+
+
+class addEditDboxBase :	public alertObj,
+								public kbdUser {
+
+public:
+			addEditDboxBase(const char* alertMsg,listener* inListener,screenTypes inType=sType240x320);
+virtual	~addEditDboxBase(void);
+				
+			const char*	getName(void);
+			gPosPack 	getPos(void);
+
+			editLabel*	nameField;
+			editLabel*	latField;
+			editLabel*	lonField;
+			datafield*	nameD;
+			datafield*	latD;
+			datafield*	lonD;
+};
+
+
 
 // **************************************************************
 // **********************   addItemDBox    **********************
 // **************************************************************
 
 
-class addItemDBox :	public alertObj,
-							public kbdUser {
+class addItemDBox :	public addEditDboxBase {
 
 	public:
-				addItemDBox(listener* inListener,screenTypes inType=sType240x320);
-				~addItemDBox(void);
-				
-				const char*	getName(void);
-				gPosPack 	getPos(void);
-	//virtual	void  		handleCom(stdComs comID);
-	//virtual	void			idle(void);
-			
-				editLabel*	nameField;
-				editLabel*	latField;
-				editLabel*	lonField;
-				datafield*	nameD;
-				datafield*	latD;
-				datafield*	lonD;
-				gPosPack		ourPos;	
+			addItemDBox(listener* inListener,screenTypes inType=sType240x320);
+virtual	~addItemDBox(void);
+
 };
 
 
@@ -98,20 +109,12 @@ class addItemDBox :	public alertObj,
 // **************************************************************
 
 
-class editItemDBox :	public alertObj,
-							public kbdUser {
+class editItemDBox :	public addEditDboxBase {
 
 	public:
-				editItemDBox(listener* inListener,const char* inName=NULL,screenTypes inType=sType240x320);
-				~editItemDBox(void);
-				
-				const char*	getName(void);
-				gPosPack 	getPos(void);
-				
-				editLabel*	nameField;
-				editLabel*	latField;
-				editLabel*	lonField;
-				gPosPack		ourPos;
+			editItemDBox(listener* inListener,gPosPack* inPos,const char* inName,screenTypes inType=sType240x320);
+virtual	~editItemDBox(void);
+
 };
 			
 #endif

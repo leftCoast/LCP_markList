@@ -62,7 +62,80 @@ deleteOkAlert::deleteOkAlert(listener* inListener)
 	
 deleteOkAlert::~deleteOkAlert(void) {  }
 	
+
 	
+// **************************************************************
+// ********************   addEditDboxBase    ********************
+// **************************************************************
+
+
+addEditDboxBase::addEditDboxBase(const char* alertMsg,listener* inListener,screenTypes inType)
+	: alertObj(alertMsg,inListener,noteAlert,false,false),
+	kbdUser(this,inType) {
+	
+	rect		editRect;
+	frame*	editFrame;
+	
+	setRect(60,100,200,146);										// Set alertBox size and shape.
+	theMsg->y = 30;													// Kick the default message over a bit.
+	editRect.setRect(10,70,width-20,12);						// Setup location for initial edit box.																				//
+	
+	nameField = new editLabel(&editRect,"");					// Create it.
+	nameField->setLocation(3,3);									// It's position inside it's datafield.
+	nameField->setColors(&black,&white);						// Set colors
+	nameField->setEventSet(fullClick);							// Events when editing.
+	nameD = new datafield(&editRect);							// Create it's datafield.
+	nameD->begin(getKbd(),nameField);							// Tell the datafield where the keyboard and it's editLabel are.
+	addObj(nameD);														// Hook it up.
+	editFrame = new frame(&editRect);							// Using the edit field rect create a frame.
+	editFrame->insetRect(-3);										// Expand it by 3 pixels per side.
+	nameD->setRect(editFrame);										// Use this to reset the datafield's frame.
+	addObj(editFrame);												// Hook it up.	
+	
+	editRect.y = editRect.y+22;									// Bump down, next line.
+	latField = new editLabel(&editRect,"");					// Go through the exact same dance with these next two..
+	latField->setLocation(3,3);									// Place it.
+	latField->setColors(&black,&white);							// Colors.
+	latField->setEventSet(fullClick);							// Events.
+	latD = new datafield(&editRect);								// Create.
+	latD->begin(getKbd(),latField);								// Assemble.
+	addObj(latD);														// Add it to the list.
+	editFrame = new frame(&editRect);							// Make a frame.
+	editFrame->insetRect(-3);										// Expand it.
+	latD->setRect(editFrame);										// Use it.
+	addObj(editFrame);												// Add it.
+	
+	editRect.y = editRect.y+22;									// Next line.
+	lonField = new editLabel(&editRect,"");					// Create.
+	lonField->setLocation(3,3);									// locate.
+	lonField->setColors(&black,&white);							// Colors
+	lonField->setEventSet(fullClick);							// Events.
+	lonD = new datafield(&editRect);								// Create.
+	lonD->begin(getKbd(),lonField);								// Tab A into slot B.
+	addObj(lonD);														// Install.
+	editFrame = new frame(&editRect);							// Another.
+	editFrame->insetRect(-3);										// Expand.
+	lonD->setRect(editFrame);										// Use it.
+	addObj(editFrame);												// And add it in.
+	
+	hookup();															// Hook into the idler queue.
+}
+
+
+addEditDboxBase::~addEditDboxBase(void) {  }
+
+	
+const char*	addEditDboxBase::getName(void) { return nameField->getTextBuff(); }
+
+
+gPosPack addEditDboxBase::getPos(void) {
+
+	posParser	aParser;
+
+	return aParser.parsePos(latField->getTextBuff(),lonField->getTextBuff());
+}
+
+
 					
 // **************************************************************
 // **********************   addItemDBox    **********************
@@ -70,64 +143,12 @@ deleteOkAlert::~deleteOkAlert(void) {  }
 	
 						
 addItemDBox::addItemDBox(listener* inListener,screenTypes inType)
-	: alertObj(ADD_ITEM_MSG,inListener,noteAlert,false,false),
-	kbdUser(this,inType) {
+	: addEditDboxBase(ADD_ITEM_MSG,inListener,inType) {
 	
-	rect		editRect;
-	frame*	editFrame;
-	
-	setRect(60,100,200,146);									// Move our alertBox down a bit.
-	theMsg->y = 30;												// Kick the default message over a bit.
-	editRect.setRect(10,70,width-20,12);					// Setup location for the edit box.																				//
-	
-	nameField = new editLabel(&editRect,"");				// Create it.
-	nameField->setLocation(3,3);
-	nameField->setColors(&black,&white);					// Set colors
-	nameField->setEventSet(fullClick);
-	nameD = new datafield(&editRect);
-	nameD->begin(getKbd(),nameField);
-	addObj(nameD);													// Hook it up.
-	editFrame = new frame(&editRect);						// Using the edit field rect create a frame.
-	editFrame->insetRect(-3);									// Expand it by 3 pixels per side.
-	nameD->setRect(editFrame);
-	addObj(editFrame);											// Hook it up.	
-	
-	editRect.y = editRect.y+22;								// Bump down, next line.
-	latField = new editLabel(&editRect,"");				// Create it.
-	latField->setLocation(3,3);
-	latField->setColors(&black,&white);						// Set colors
-	latField->setEventSet(fullClick);
-	latD = new datafield(&editRect);
-	latD->begin(getKbd(),latField);
-	addObj(latD);													// Add it to the list.
-	editFrame = new frame(&editRect);							// Using the edit field rect create a frame.
-	editFrame->insetRect(-3);									// Expand it by 3 pixels per side.
-	latD->setRect(editFrame);
-	addObj(editFrame);											// In the pot it goes.
-	
-	editRect.y = editRect.y+22;								// Bump down, next line.
-	lonField = new editLabel(&editRect,"");				// Create it.
-	lonField->setLocation(3,3);
-	lonField->setColors(&black,&white);						// Set colors
-	lonField->setEventSet(fullClick);
-	lonD = new datafield(&editRect);
-	lonD->begin(getKbd(),lonField);
-	addObj(lonD);							
-	editFrame = new frame(&editRect);						// Using the edit field rect create a frame.
-	editFrame->insetRect(-3);									// Expand it by 3 pixels per side.
-	lonD->setRect(editFrame);
-	addObj(editFrame);											// And add it in.
-	
-	if (ourGPS->valid) {
-		latField->setValue(ourGPS->latLon.showLatStr());
-		lonField->setValue(ourGPS->latLon.showLonStr());
-	}
-	hookup();
-	nameField->setValue("Home");
-	latField->setValue("48.49033 n");
-	lonField->setValue("122.66190 W");
-	
-															// Hook into the idler queue.
+	if (ourGPS->valid) {												// If we have a current location..
+		latField->setValue(ourGPS->latLon.showLatStr());	// Use it to set.
+		lonField->setValue(ourGPS->latLon.showLonStr());	// Default values.
+	}																		//
 }
 	
 	
@@ -136,79 +157,26 @@ addItemDBox::~addItemDBox(void) {
 }
 
 
-const char*	addItemDBox::getName(void) { return nameField->getTextBuff(); }
-
-
-gPosPack addItemDBox::getPos(void) {
-
-	posParser	aParser;
-
-	return aParser.parsePos(latField->getTextBuff(),lonField->getTextBuff());
-}
-
-/*
-void addItemDBox::handleCom(stdComs comID) {
-
-	if (comID==okCmd) {
-		Serial.println("got OkCmd");
-		Serial.println(nameField->getTextBuff());
-		Serial.println(latField->getTextBuff());
-		Serial.println(lonField->getTextBuff());
-	}
-	alertObj::handleCom(comID);
-	//if (comID==newItemCmd) {
-	//	nameField->clearStr();
-	//}
-}
-
-
-void addItemDBox::idle(void) {
-	
-	alertObj::idle();
-	
-}
-*/
 
 // **************************************************************
 // **********************   editItemDBox    **********************
 // **************************************************************
 
 						
-editItemDBox::editItemDBox(listener* inListener,const char* inName,screenTypes inType)
-	: alertObj(EDIT_ITEM_MSG,inListener,noteAlert,false,false),
-	kbdUser(this,inType) {
+editItemDBox::editItemDBox(listener* inListener,gPosPack* inPos,const char* inName,screenTypes inType)
+	: addEditDboxBase(EDIT_ITEM_MSG,inListener,inType) {
 	
-	rect	editRect;
+	globalPos	aGpos;
 	
-	theMsg->x += 4;															// Kick the default message over a bit.
-	y += 50;																		// Move our alertBox down a bit.
-	editRect.setRect(52,40,75,10);										// Setup location for the edit box.
-	nameField = new editLabel(&editRect,inName);						// Create it.
-	nameField->setColors(&black,&white);								// Set colors
-	setEditField(nameField);												// We also manage the keyboard. So, edit this.
-	addObj(nameField);														// Attach the edit field to our list.
-	
-	frame*	editFrame = new frame(nameField);						// Using the edit field rect create a frame.
-	editFrame->insetRect(-3);												// Expand it by 3 pixels per side.
-	addObj(editFrame);														// And add that to our list.
-	
-	hookup();																	// Hook into the idler queue.
+	if (inPos && inName) {
+		aGpos.setPos(inPos);
+		nameField->setValue(inName);
+		latField->setValue(aGpos.showLatStr());	// Use it to set.
+		lonField->setValue(aGpos.showLonStr());	// Default values.
+	}
 }
 	
 	
 editItemDBox::~editItemDBox(void) {  }
 
-
-//void	editItemDBox::setName(const char* itemName) { nameField->setValue(itemName); }
-
-
-const char*	editItemDBox::getName(void) { return nameField->editBuff; }
-
-
-gPosPack editItemDBox::getPos(void) {
-
-	posParser	aParser;
-		
-	//return aParser.parsePos(latField->editBuff,lonField->editBuff);
-}
 	
