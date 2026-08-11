@@ -146,8 +146,8 @@ addItemDBox::addItemDBox(listener* inListener,screenTypes inType)
 	: addEditDboxBase(ADD_ITEM_MSG,inListener,inType) {
 	
 	if (ourGPS->valid) {												// If we have a current location..
-		latField->setValue(ourGPS->latLon.showLatStr());	// Use it to set.
-		lonField->setValue(ourGPS->latLon.showLonStr());	// Default values.
+		latField->setValue(ourGPS->latLon.getLatStr());		// Use it to set.
+		lonField->setValue(ourGPS->latLon.getLonStr());		// Default values.
 	}																		//
 }
 	
@@ -171,8 +171,8 @@ editItemDBox::editItemDBox(listener* inListener,gPosPack* inPos,const char* inNa
 	if (inPos && inName) {
 		aGpos.setPos(inPos);
 		nameField->setValue(inName);
-		latField->setValue(aGpos.showLatStr());	// Use it to set.
-		lonField->setValue(aGpos.showLonStr());	// Default values.
+		latField->setValue(aGpos.getLatStr());	// Use it to set.
+		lonField->setValue(aGpos.getLonStr());	// Default values.
 	}
 }
 	
