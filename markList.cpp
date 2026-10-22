@@ -4,7 +4,7 @@
 #include <globalPos.h>
 #include <strTools.h>
 #include <rectArrange.h>
-
+#include <navigation.h>
 #include <debug.h>
 
 #define LIST_X		10								// Little border?
@@ -29,8 +29,6 @@ colorObj*	subTextColor;
 #define APP_ICON_H	40
 #define APP_ICON_Y	4
 
-navMark	selectedMark;
-bool		haveMarkSet = false;
 
 // *****************************************************
 // ******************   markListObj   ******************
@@ -217,9 +215,13 @@ void  markListObj::setThisFocus(bool setLoose) {
 
 
 void  markListObj::setMark(void) {
+
+	gPosPack		destloc;
+	globalPos	destMark;
 	
-	selectedMark = *this;
-	haveMarkSet = true;
+	destloc = getPos();
+	destMark.setPos(&destloc);
+	ourNavigator->setMark(&destMark);
 }
 
 

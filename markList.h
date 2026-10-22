@@ -9,9 +9,6 @@
 #include <markListDB.h>
 #include <navOS.h>
 
-extern navMark selectedMark;
-extern bool		haveMarkSet;
-
 
 // *****************************************************
 // ******************   markListObj   ******************
