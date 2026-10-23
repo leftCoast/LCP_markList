@@ -24,7 +24,7 @@ colorObj*	dispBackColor;
 colorObj*	mainTextColor;
 colorObj*	subTextColor;	
 
-#define SELECT_ICON	"select.bmp"
+#define SELECT_ICON	"selct32g.bmp"
 		
 #define APP_ICON_H	40
 #define APP_ICON_Y	4
@@ -692,6 +692,7 @@ void markList::setup(void) {
    spreader.addRect(readmeBtn);
    
    ourItemMgr->populateList();
+   setItemIcons(false,true,false,false,true);
 }
 
 
